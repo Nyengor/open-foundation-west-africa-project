@@ -1,28 +1,44 @@
 import csv
-
-with open("galamsey_data.csv", newline='', encoding="utf-8") as file:
-    reader = csv.DictReader(file)
-    rows = []
-
-    for row in reader:
-        rows.append(row)
+import sqlite3
+from datetime import datetime
 
 
-for i, row in enumerate(rows[:5]):
-    print(f"Row {i+1}:", row)
-
-# Total number of galamsey sites
+# -----------------------------
+# LOAD AND CLEAN CSV DATA
+# -----------------------------
 def load_data(filepath):
     data = []
-    with open(filepath, newline='', encoding="utf-8") as file:
+
+    with open(filepath, newline="", encoding="utf-8") as file:
         reader = csv.DictReader(file)
+
+        # Clean column headers
+        reader.fieldnames = [name.strip() for name in reader.fieldnames if name]
+
         for row in reader:
-            # convert sites from string to integer
-            row["Number_of_Galamsay_Sites"] = int(row["Number_of_Galamsay_Sites"])
-            data.append(row)
+            clean_row = {}
+
+            # Clean each row
+            for key, value in row.items():
+                if key and value:
+                    clean_row[key.strip()] = value.strip()
+
+            # Convert number of sites to int
+            sites = int(clean_row["Number_of_Galamsay_Sites"])
+
+            # Skip invalid negative values
+            if sites < 0:
+                continue
+
+            clean_row["Number_of_Galamsay_Sites"] = sites
+            data.append(clean_row)
+
     return data
 
 
+# -----------------------------
+# ANALYSIS FUNCTIONS
+# -----------------------------
 def total_sites(data):
     total = 0
     for row in data:
@@ -30,8 +46,6 @@ def total_sites(data):
     return total
 
 
-
-# Region with the higest number of galamsey sites
 def region_with_highest_sites(data):
     region_totals = {}
 
@@ -48,9 +62,6 @@ def region_with_highest_sites(data):
     return highest_region, region_totals[highest_region]
 
 
-
-
-# Cities that exceed a given threshold with the threshold of 20
 def cities_above_threshold(data, threshold):
     cities = []
 
@@ -60,7 +71,7 @@ def cities_above_threshold(data, threshold):
 
     return cities
 
-# Average galamsey per region
+
 def average_sites_per_region(data):
     region_totals = {}
     region_counts = {}
@@ -83,25 +94,92 @@ def average_sites_per_region(data):
     return averages
 
 
-# Conditional statement for the questions
+# -----------------------------
+# DATABASE FUNCTIONS
+# -----------------------------
+def init_database():
+    conn = sqlite3.connect("galamsey_analysis.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS analysis_results (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            total_sites INTEGER,
+            highest_region TEXT,
+            highest_region_count INTEGER,
+            threshold INTEGER,
+            cities_above_threshold TEXT,
+            created_at TEXT
+        )
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+def save_analysis_result(
+    total_sites,
+    highest_region,
+    highest_region_count,
+    threshold,
+    cities_above_threshold
+):
+    conn = sqlite3.connect("galamsey_analysis.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO analysis_results (
+            total_sites,
+            highest_region,
+            highest_region_count,
+            threshold,
+            cities_above_threshold,
+            created_at
+        ) VALUES (?, ?, ?, ?, ?, ?)
+    """, (
+        total_sites,
+        highest_region,
+        highest_region_count,
+        threshold,
+        ", ".join(cities_above_threshold),
+        datetime.now().isoformat()
+    ))
+
+    conn.commit()
+    conn.close()
+
+
+# -----------------------------
+# MAIN EXECUTION
+# -----------------------------
 if __name__ == "__main__":
+    init_database()
+
     data = load_data("galamsey_data.csv")
+
     total = total_sites(data)
     print("Total number of Galamsay sites:", total)
 
-
     region, count = region_with_highest_sites(data)
-    print("Region with highest sites:", region, "(", count, ")")
-    
+    print("Region with highest sites:", region, f"({count})")
 
-    threshold = 10
+    threshold = 20
     cities = cities_above_threshold(data, threshold)
     print(f"Cities with more than {threshold} sites:")
     for city in cities:
         print("-", city)
 
-
     averages = average_sites_per_region(data)
     print("Average number of sites per region:")
     for region, avg in averages.items():
-      print(f"- {region}: {avg:.2f}")
+        print(f"- {region}: {avg:.2f}")
+
+    save_analysis_result(
+        total,
+        region,
+        count,
+        threshold,
+        cities
+    )
+
+    print("Analysis saved to database successfully.")
