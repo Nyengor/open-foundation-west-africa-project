@@ -49,6 +49,41 @@ def region_with_highest_sites(data):
 
 
 
+
+# Cities that exceed a given threshold with the threshold of 20
+def cities_above_threshold(data, threshold):
+    cities = []
+
+    for row in data:
+        if row["Number_of_Galamsay_Sites"] > threshold:
+            cities.append(row["City"])
+
+    return cities
+
+# Average galamsey per region
+def average_sites_per_region(data):
+    region_totals = {}
+    region_counts = {}
+
+    for row in data:
+        region = row["Region"]
+        sites = row["Number_of_Galamsay_Sites"]
+
+        if region not in region_totals:
+            region_totals[region] = 0
+            region_counts[region] = 0
+
+        region_totals[region] += sites
+        region_counts[region] += 1
+
+    averages = {}
+    for region in region_totals:
+        averages[region] = region_totals[region] / region_counts[region]
+
+    return averages
+
+
+# Conditional statement for the questions
 if __name__ == "__main__":
     data = load_data("galamsey_data.csv")
     total = total_sites(data)
@@ -57,3 +92,16 @@ if __name__ == "__main__":
 
     region, count = region_with_highest_sites(data)
     print("Region with highest sites:", region, "(", count, ")")
+    
+
+    threshold = 10
+    cities = cities_above_threshold(data, threshold)
+    print(f"Cities with more than {threshold} sites:")
+    for city in cities:
+        print("-", city)
+
+
+    averages = average_sites_per_region(data)
+    print("Average number of sites per region:")
+    for region, avg in averages.items():
+      print(f"- {region}: {avg:.2f}")
