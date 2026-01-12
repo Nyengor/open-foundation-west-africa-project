@@ -3,9 +3,9 @@ import sqlite3
 from datetime import datetime
 
 
-# -----------------------------
-# LOAD AND CLEAN CSV DATA
-# -----------------------------
+
+# LOADING CSV DATA
+
 def load_data(filepath):
     data = []
 
@@ -36,16 +36,17 @@ def load_data(filepath):
     return data
 
 
-# -----------------------------
+
 # ANALYSIS FUNCTIONS
-# -----------------------------
+
+# Question 1: Total number of Galamsay sites
 def total_sites(data):
     total = 0
     for row in data:
         total += row["Number_of_Galamsay_Sites"]
     return total
 
-
+# Question 2: Region with highest number of Galamsay sites
 def region_with_highest_sites(data):
     region_totals = {}
 
@@ -62,6 +63,7 @@ def region_with_highest_sites(data):
     return highest_region, region_totals[highest_region]
 
 
+# Question 3: Cities with more than a specified number of Galamsay sites
 def cities_above_threshold(data, threshold):
     cities = []
 
@@ -71,7 +73,7 @@ def cities_above_threshold(data, threshold):
 
     return cities
 
-
+# Question 4: Average number of Galamsay sites per region
 def average_sites_per_region(data):
     region_totals = {}
     region_counts = {}
@@ -94,9 +96,8 @@ def average_sites_per_region(data):
     return averages
 
 
-# -----------------------------
 # DATABASE FUNCTIONS
-# -----------------------------
+
 def init_database():
     conn = sqlite3.connect("galamsey_analysis.db")
     cursor = conn.cursor()
@@ -149,9 +150,9 @@ def save_analysis_result(
     conn.close()
 
 
-# -----------------------------
+
 # MAIN EXECUTION
-# -----------------------------
+
 if __name__ == "__main__":
     init_database()
 
