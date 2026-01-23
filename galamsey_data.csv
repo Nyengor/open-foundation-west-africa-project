@@ -9,8 +9,10 @@ Ejura,Ashanti,22
 Kumasi,Ashanti,25
 Sunyani,Bono,9
 Berekum,Bono,12
+Sunyani,Bono,1000
 Kintampo,Bono East,11
 Techiman,Bono East,16
+Cape Coast,Central,0
 Dunkwa,Central,8
 Agona Swedru,Central,10
 Apam,Central,11
@@ -43,7 +45,8 @@ Keta,Volta,10
 Ho,Volta,11
 Aflao,Volta,13
 Prestea,Western,8
-Tarkwa,Western,18
+Tarkwa,Western,8
+Tarkwa,Western,10
 Axim,Western,12
 Asankragua,Western,16
 Bibiani,Western,17

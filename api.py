@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 import sqlite3
 
 app = Flask(__name__)
-DB_FILE = "galamsay_analysis.db"
+DB_FILE = "galamsey_analysis.db"
 
 def get_all_results():
     conn = sqlite3.connect(DB_FILE)
@@ -19,8 +19,7 @@ def get_all_results():
             "total_sites": row["total_sites"],
             "highest_region": row["highest_region"],
             "highest_region_count": row["highest_region_count"],
-            "threshold": row["threshold"],
-            "cities_above_threshold": row["cities_above_threshold"].split(", "),
+            
             "created_at": row["created_at"]
         })
 

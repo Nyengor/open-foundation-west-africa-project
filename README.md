@@ -1,11 +1,10 @@
 # Galamsay Data Analysis & REST API
 
-This project analyzes illegal small-scale mining (Galamsay) activities in Ghana using structured CSV data.  
+This project analyzes illegal small-scale mining (Galamsey) activities in Ghana using structured CSV data.  
 The system performs data cleaning, statistical analysis, persistent storage, and exposes results via a RESTful API.
 
 The project simulates a real-world workflow involving data analysis, backend processing, and API development.
 
----
 
 ## Problem Statement
 
@@ -17,9 +16,7 @@ The objectives of this project are to:
 - Perform analytical calculations
 - Persist analysis results for auditing and reuse
 - Expose results programmatically via an API
-- Ensure correctness through automated testing
 
----
 
 ## System Workflow
 
@@ -44,8 +41,8 @@ REST API (JSON Output)
 Galamsey analysis/
 ├── analysis.py # Data loading, cleaning, analysis, database logging
 ├── api.py # REST API for accessing analysis results
-├── galamsay_data.csv # Input dataset
-├── galamsay_analysis.db # SQLite database (generated at runtime)
+├── galamsey_data.csv # Input dataset
+├── galamsey_analysis.db # SQLite database (generated at runtime)
 └── README.md # Project documentation
 
 
@@ -59,7 +56,7 @@ Galamsey analysis/
 
 ## Database Design
 
-A SQLite database (`galamsay_analysis.db`) is used to log analysis runs.
+A SQLite database (`galamsey_analysis.db`) is used to log analysis runs.
 
 Stored fields include:
 
